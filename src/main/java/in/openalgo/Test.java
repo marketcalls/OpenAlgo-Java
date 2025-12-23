@@ -27,7 +27,19 @@ public class Test {
         System.out.println(gson.toJson(quotesResponse));
         System.out.println();
 
-        // Test 2: multiquotes
+        // Test 2: holidays
+        System.out.println("=== Testing holidays() ===");
+        JsonObject holidaysResponse = client.holidays(2025);
+        System.out.println(gson.toJson(holidaysResponse));
+        System.out.println();
+
+        // Test 3: timings
+        System.out.println("=== Testing timings() ===");
+        JsonObject timingsResponse = client.timings("2025-12-23");
+        System.out.println(gson.toJson(timingsResponse));
+        System.out.println();
+
+        // Test 4: multiquotes
         System.out.println("=== Testing multiquotes() ===");
         List<Map<String, String>> symbols = new ArrayList<>();
 
@@ -50,7 +62,31 @@ public class Test {
         System.out.println(gson.toJson(multiResponse));
         System.out.println();
 
-        // Test 3: WebSocket LTP
+        // Test 5: optionsmultiorder with NRML
+        System.out.println("=== Testing optionsmultiorder (NRML) ===");
+        List<Map<String, Object>> legs = new ArrayList<>();
+
+        Map<String, Object> leg1 = new HashMap<>();
+        leg1.put("offset", "ATM");
+        leg1.put("option_type", "CE");
+        leg1.put("action", "BUY");
+        leg1.put("quantity", 75);
+        leg1.put("product", "NRML");
+        legs.add(leg1);
+
+        Map<String, Object> leg2 = new HashMap<>();
+        leg2.put("offset", "OTM1");
+        leg2.put("option_type", "CE");
+        leg2.put("action", "SELL");
+        leg2.put("quantity", 75);
+        leg2.put("product", "NRML");
+        legs.add(leg2);
+
+        JsonObject multiOrderResponse = client.optionsmultiorder("JavaTest", "NIFTY", "NFO", legs, "30DEC25");
+        System.out.println(gson.toJson(multiOrderResponse));
+        System.out.println();
+
+        // Test 6: WebSocket LTP
         System.out.println("=== Testing WebSocket LTP ===");
         System.out.println("Connecting to: " + wsUrl);
 

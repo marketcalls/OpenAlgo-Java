@@ -579,6 +579,73 @@ System.out.println("OrderId: " + response.get("orderid").getAsString());
 }
 ```
 
+## OptionsMultiOrder Example
+
+To place multi-leg options strategy (e.g., Bull Call Spread):
+
+```java
+List<Map<String, Object>> legs = new ArrayList<>();
+
+// Leg 1: Buy ATM CE
+Map<String, Object> leg1 = new HashMap<>();
+leg1.put("offset", "ATM");
+leg1.put("option_type", "CE");
+leg1.put("action", "BUY");
+leg1.put("quantity", 75);
+leg1.put("product", "NRML");
+legs.add(leg1);
+
+// Leg 2: Sell OTM1 CE
+Map<String, Object> leg2 = new HashMap<>();
+leg2.put("offset", "OTM1");
+leg2.put("option_type", "CE");
+leg2.put("action", "SELL");
+leg2.put("quantity", 75);
+leg2.put("product", "NRML");
+legs.add(leg2);
+
+// Place multi-leg order with expiry
+JsonObject response = client.optionsmultiorder("MyStrategy", "NIFTY", "NFO", legs, "30DEC25");
+
+// Or without expiry (uses nearest expiry)
+JsonObject response = client.optionsmultiorder("MyStrategy", "NIFTY", "NFO", legs);
+
+System.out.println("Status: " + response.get("status").getAsString());
+```
+
+**OptionsMultiOrder Response**
+
+```json
+{
+  "status": "success",
+  "mode": "analyze",
+  "underlying": "NIFTY",
+  "underlying_ltp": 26172.4,
+  "results": [
+    {
+      "leg": 1,
+      "action": "BUY",
+      "offset": "ATM",
+      "option_type": "CE",
+      "symbol": "NIFTY30DEC2526150CE",
+      "exchange": "NFO",
+      "orderid": "25122337669355",
+      "status": "success"
+    },
+    {
+      "leg": 2,
+      "action": "SELL",
+      "offset": "OTM1",
+      "option_type": "CE",
+      "symbol": "NIFTY30DEC2526200CE",
+      "exchange": "NFO",
+      "orderid": "25122347595003",
+      "status": "success"
+    }
+  ]
+}
+```
+
 ## OptionChain Example
 
 ```java
