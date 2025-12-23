@@ -57,7 +57,7 @@ public abstract class OrderApi extends BaseApi {
     }
 
     /**
-     * Place an order with minimal parameters.
+     * Place an order with minimal parameters (MARKET, MIS, qty=1).
      */
     public JsonObject placeorder(String symbol, String action, String exchange) {
         return placeorder(symbol, action, exchange, null, null, 1, null, null, null, null, null, null, null);
@@ -68,6 +68,30 @@ public abstract class OrderApi extends BaseApi {
      */
     public JsonObject placeorder(String symbol, String action, String exchange, int quantity) {
         return placeorder(symbol, action, exchange, null, null, quantity, null, null, null, null, null, null, null);
+    }
+
+    /**
+     * Place an order with priceType, product, and quantity.
+     */
+    public JsonObject placeorder(String symbol, String action, String exchange,
+                                  String priceType, String product, int quantity) {
+        return placeorder(symbol, action, exchange, priceType, product, quantity, null, null, null, null, null, null, null);
+    }
+
+    /**
+     * Place an order with priceType, product, quantity, and strategy.
+     */
+    public JsonObject placeorder(String symbol, String action, String exchange,
+                                  String priceType, String product, int quantity, String strategy) {
+        return placeorder(symbol, action, exchange, priceType, product, quantity, strategy, null, null, null, null, null, null);
+    }
+
+    /**
+     * Place a LIMIT order with price.
+     */
+    public JsonObject placeorder(String symbol, String action, String exchange,
+                                  String product, int quantity, String price) {
+        return placeorder(symbol, action, exchange, "LIMIT", product, quantity, null, price, null, null, null, null, null);
     }
 
     /**
@@ -119,6 +143,22 @@ public abstract class OrderApi extends BaseApi {
      */
     public JsonObject placesmartorder(String symbol, String action, String exchange, int positionSize) {
         return placesmartorder(symbol, action, exchange, positionSize, null, null, 1, null, null, null, null, null, null, null);
+    }
+
+    /**
+     * Place a smart order with priceType, product, and quantity.
+     */
+    public JsonObject placesmartorder(String symbol, String action, String exchange,
+                                       int positionSize, String priceType, String product, int quantity) {
+        return placesmartorder(symbol, action, exchange, positionSize, priceType, product, quantity, null, null, null, null, null, null, null);
+    }
+
+    /**
+     * Place a smart order with priceType, product, quantity, and strategy.
+     */
+    public JsonObject placesmartorder(String symbol, String action, String exchange,
+                                       int positionSize, String priceType, String product, int quantity, String strategy) {
+        return placesmartorder(symbol, action, exchange, positionSize, priceType, product, quantity, strategy, null, null, null, null, null, null);
     }
 
     /**

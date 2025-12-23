@@ -12,7 +12,7 @@ Add the following dependency to your `pom.xml`:
 <dependency>
     <groupId>in.openalgo</groupId>
     <artifactId>openalgo</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 </dependency>
 ```
 
@@ -21,7 +21,7 @@ Add the following dependency to your `pom.xml`:
 Add the following to your `build.gradle`:
 
 ```groovy
-implementation 'in.openalgo:openalgo:1.0.0'
+implementation 'in.openalgo:openalgo:1.0.1'
 ```
 
 ## Compatibility
@@ -65,24 +65,21 @@ Please refer to the documentation on [order constants](https://docs.openalgo.in/
 
 ## PlaceOrder Example
 
-To place a new market order:
+To place a new market order (simplest form):
 
 ```java
-JsonObject response = client.placeorder(
-    "YESBANK",   // symbol
-    "BUY",       // action
-    "NSE",       // exchange
-    "MARKET",    // priceType
-    "CNC",       // product
-    1,           // quantity
-    "Java",      // strategy
-    null,        // price
-    null,        // triggerPrice
-    null,        // disclosedQuantity
-    null,        // target
-    null,        // stoploss
-    null         // trailingSl
-);
+// Minimal - uses defaults (MARKET, MIS, qty=1)
+JsonObject response = client.placeorder("YESBANK", "BUY", "NSE");
+
+// With quantity
+JsonObject response = client.placeorder("YESBANK", "BUY", "NSE", 10);
+
+// With priceType, product, quantity
+JsonObject response = client.placeorder("YESBANK", "BUY", "NSE", "MARKET", "CNC", 1);
+
+// With strategy
+JsonObject response = client.placeorder("YESBANK", "BUY", "NSE", "MARKET", "CNC", 1, "MyStrategy");
+
 System.out.println("Status: " + response.get("status").getAsString());
 System.out.println("OrderId: " + response.get("orderid").getAsString());
 ```
@@ -100,21 +97,9 @@ System.out.println("OrderId: " + response.get("orderid").getAsString());
 To place a new limit order:
 
 ```java
-JsonObject response = client.placeorder(
-    "YESBANK",   // symbol
-    "BUY",       // action
-    "NSE",       // exchange
-    "LIMIT",     // priceType
-    "CNC",       // product
-    1,           // quantity
-    "Java",      // strategy
-    "16",        // price
-    "0",         // triggerPrice
-    "0",         // disclosedQuantity
-    null,        // target
-    null,        // stoploss
-    null         // trailingSl
-);
+// LIMIT order with price
+JsonObject response = client.placeorder("YESBANK", "BUY", "NSE", "CNC", 1, "16");
+
 System.out.println("Status: " + response.get("status").getAsString());
 System.out.println("OrderId: " + response.get("orderid").getAsString());
 ```
@@ -133,22 +118,15 @@ System.out.println("OrderId: " + response.get("orderid").getAsString());
 To place a smart order considering the current position size:
 
 ```java
-JsonObject response = client.placesmartorder(
-    "TATAMOTORS", // symbol
-    "SELL",       // action
-    "NSE",        // exchange
-    5,            // positionSize
-    "MARKET",     // priceType
-    "MIS",        // product
-    1,            // quantity
-    "Java",       // strategy
-    null,         // price
-    null,         // triggerPrice
-    null,         // disclosedQuantity
-    null,         // target
-    null,         // stoploss
-    null          // trailingSl
-);
+// Minimal - uses defaults (MARKET, MIS, qty=1)
+JsonObject response = client.placesmartorder("TATAMOTORS", "SELL", "NSE", 5);
+
+// With priceType, product, quantity
+JsonObject response = client.placesmartorder("TATAMOTORS", "SELL", "NSE", 5, "MARKET", "MIS", 1);
+
+// With strategy
+JsonObject response = client.placesmartorder("TATAMOTORS", "SELL", "NSE", 5, "MARKET", "MIS", 1, "MyStrategy");
+
 System.out.println("Status: " + response.get("status").getAsString());
 System.out.println("OrderId: " + response.get("orderid").getAsString());
 ```
@@ -185,7 +163,11 @@ orders.add(Map.of(
     "product", "MIS"
 ));
 
-JsonObject response = client.basketorder(orders, "Java");
+// Without strategy (uses default "Java")
+JsonObject response = client.basketorder(orders);
+
+// With strategy
+JsonObject response = client.basketorder(orders, "MyStrategy");
 System.out.println("Status: " + response.get("status").getAsString());
 ```
 
@@ -206,19 +188,9 @@ System.out.println("Status: " + response.get("status").getAsString());
 To place a new split order:
 
 ```java
-JsonObject response = client.splitorder(
-    "YESBANK",  // symbol
-    "SELL",     // action
-    "NSE",      // exchange
-    105,        // quantity
-    20,         // splitsize
-    "MARKET",   // priceType
-    "MIS",      // product
-    "Java",     // strategy
-    null,       // price
-    null,       // triggerPrice
-    null        // disclosedQuantity
-);
+// Minimal - uses defaults (MARKET, MIS)
+JsonObject response = client.splitorder("YESBANK", "SELL", "NSE", 105, 20);
+
 System.out.println("Status: " + response.get("status").getAsString());
 ```
 
@@ -272,7 +244,12 @@ System.out.println("OrderId: " + response.get("orderid").getAsString());
 To cancel an existing order:
 
 ```java
-JsonObject response = client.cancelorder("250408001002736", "Java");
+// Without strategy (uses default)
+JsonObject response = client.cancelorder("250408001002736");
+
+// With strategy
+JsonObject response = client.cancelorder("250408001002736", "MyStrategy");
+
 System.out.println("Status: " + response.get("status").getAsString());
 System.out.println("OrderId: " + response.get("orderid").getAsString());
 ```
@@ -291,7 +268,12 @@ System.out.println("OrderId: " + response.get("orderid").getAsString());
 To cancel all open orders and trigger pending orders:
 
 ```java
-JsonObject response = client.cancelallorder("Java");
+// Without strategy (uses default)
+JsonObject response = client.cancelallorder();
+
+// With strategy
+JsonObject response = client.cancelallorder("MyStrategy");
+
 System.out.println("Status: " + response.get("status").getAsString());
 ```
 
@@ -310,7 +292,12 @@ System.out.println("Status: " + response.get("status").getAsString());
 To close all open positions across various exchanges:
 
 ```java
-JsonObject response = client.closeposition("Java");
+// Without strategy (uses default)
+JsonObject response = client.closeposition();
+
+// With strategy
+JsonObject response = client.closeposition("MyStrategy");
+
 System.out.println("Status: " + response.get("status").getAsString());
 ```
 
@@ -328,7 +315,12 @@ System.out.println("Status: " + response.get("status").getAsString());
 To get the current order status:
 
 ```java
-JsonObject response = client.orderstatus("250828000185002", "Java");
+// Without strategy (uses default)
+JsonObject response = client.orderstatus("250828000185002");
+
+// With strategy
+JsonObject response = client.orderstatus("250828000185002", "MyStrategy");
+
 System.out.println("Status: " + response.get("status").getAsString());
 if (response.has("data")) {
     JsonObject data = response.getAsJsonObject("data");
@@ -360,7 +352,12 @@ if (response.has("data")) {
 To get the current open position:
 
 ```java
-JsonObject response = client.openposition("YESBANK", "NSE", "MIS", "Java");
+// Without strategy (uses default)
+JsonObject response = client.openposition("YESBANK", "NSE", "MIS");
+
+// With strategy
+JsonObject response = client.openposition("YESBANK", "NSE", "MIS", "MyStrategy");
+
 System.out.println("Status: " + response.get("status").getAsString());
 System.out.println("Quantity: " + response.get("quantity").getAsInt());
 ```

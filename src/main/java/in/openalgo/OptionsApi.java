@@ -101,6 +101,25 @@ public abstract class OptionsApi extends AccountApi {
     }
 
     /**
+     * Place an options order with expiry date.
+     */
+    public JsonObject optionsorder(String underlying, String exchange, String offset,
+                                    String optionType, String action, int quantity, String expiryDate) {
+        return optionsorder(underlying, exchange, offset, optionType, action, quantity,
+                null, expiryDate, null, null, null, null, null);
+    }
+
+    /**
+     * Place an options order with expiry date and product.
+     */
+    public JsonObject optionsorder(String underlying, String exchange, String offset,
+                                    String optionType, String action, int quantity,
+                                    String expiryDate, String product) {
+        return optionsorder(underlying, exchange, offset, optionType, action, quantity,
+                null, expiryDate, null, product, null, null, null);
+    }
+
+    /**
      * Get option symbol based on strike offset.
      *
      * @param underlying Underlying symbol (required)
